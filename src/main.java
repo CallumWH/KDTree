@@ -24,7 +24,8 @@ public class main
 
 		Vector2[] vector2Array = coFilter.FilterStringList(coordinateList);
 		kDTree.createKDTree(vector2Array);
-		kDTree.printKDTree();
+		
+		System.out.println(kDTree.findMostIsolatedCoordinate(vector2Array).OutputString());
 		
 		System.out.println("done");
 	}
