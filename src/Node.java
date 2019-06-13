@@ -87,39 +87,39 @@ class Node
 
 	public double getClosestNeighbourDistance(Vector2 targetVector, Node treeRoot)
 	{
-		Node   bottomLeaf   = findClosestLeafRecursive(targetVector, treeRoot, Axis.X);
+		Node   bottomLeaf   = findClosestLeafRecursive(targetVector, treeRoot);
 		double bestDistance = getNighborDistanceRecursive(targetVector, bottomLeaf, -1);
 
 		return bestDistance;
 	}
 
-	private Node findClosestLeafRecursive(Vector2 targetCoordinates, Node root, Axis sortDirection)
+	private Node findClosestLeafRecursive(Vector2 targetCoordinates, Node root)
 	{
 
 		Node target = new Node();
 
 		if (root.getVector() != null)
 		{
-			if (sortDirection == Axis.X)
+			if (root.currentAxis == Axis.X)
 			{
 				if (targetCoordinates.getX() >= root.getVector().getX())
 				{
-					target = findClosestLeafRecursive(targetCoordinates, root.getRight(), Axis.Y);
+					target = findClosestLeafRecursive(targetCoordinates, root.getRight());
 				}
 				else
 				{
-					target = findClosestLeafRecursive(targetCoordinates, root.getLeft(), Axis.Y);
+					target = findClosestLeafRecursive(targetCoordinates, root.getLeft());
 				}
 			}
 			else
 			{
 				if (targetCoordinates.getY() >= root.getVector().getY())
 				{
-					target = findClosestLeafRecursive(targetCoordinates, root.getRight(), Axis.X);
+					target = findClosestLeafRecursive(targetCoordinates, root.getRight());
 				}
 				else
 				{
-					target = findClosestLeafRecursive(targetCoordinates, root.getLeft(), Axis.X);
+					target = findClosestLeafRecursive(targetCoordinates, root.getLeft());
 				}
 			}
 		}
@@ -135,6 +135,13 @@ class Node
 	{
 		double currentDistance = calculateDistance(targetCoordinates, currentNode.getVector());
 
+		
+		if(targetCoordinates.getX() == 9998616)				
+		{
+			int i = 1;
+			i = 2;
+		}			
+		
 		if (currentDistance > 0)
 		{
 			if (bestDistance > currentDistance || bestDistance < 0)
@@ -160,7 +167,7 @@ class Node
 				oppositeNode = currentNode.getParentNode().getRight();
 			}
 
-			if (currentNode.currentAxis == Axis.X)
+			if (currentNode.getParentNode().currentAxis == Axis.X)
 			{
 				distanceApart = currentNode.getParentNode().getVector().getX() - targetCoordinates.getX();
 			}
@@ -176,7 +183,14 @@ class Node
 
 			if (distanceApart < bestDistance)
 			{
-				Node newLeaf = findClosestLeafRecursive(targetCoordinates, oppositeNode, oppositeNode.currentAxis);
+				
+				if(currentNode.getParentNode().getParentNode() == null)
+				{
+					int i = 1;
+					i = 1;
+				}
+				
+				Node newLeaf = findClosestLeafRecursive(targetCoordinates, oppositeNode);
 				bestDistance = recursiveCheckBranch(targetCoordinates, newLeaf, currentNode.getParentNode(),
 						bestDistance);
 			}
@@ -189,55 +203,65 @@ class Node
 	{
 
 		double currentDistance = calculateDistance(targetCoordinates, currentNode.getVector());
-
-		if (currentDistance > 0)
+		
+		if(targetCoordinates.getX() == 9998616)				
 		{
+			int i = 1;
+			i = 2;
+		}	
+		
+		if (currentDistance > 0)
+		{		
 			if (bestDistance > currentDistance || bestDistance < 0)
 			{
 				bestDistance = currentDistance;
 			}
 		}
 
-		if (currentNode.getParentNode() != endNode)
+		if (currentNode != endNode)
 		{
-			if (currentNode.getParentNode() == null)
-			{
-				return 0;
-			}
+
 			bestDistance = recursiveCheckBranch(targetCoordinates, currentNode.getParentNode(), endNode, bestDistance);
 
-			// check sibling if there is any closer points than the parent
-			Node oppositeNode;
-			int  distanceApart;
+			if (currentNode.getParentNode() != endNode)
+			{
+				// check sibling if there is any closer points than the parent
+				Node oppositeNode;
 
-			if (currentNode.getParentNode().getLeft() != currentNode)
-			{
-				oppositeNode = currentNode.getParentNode().getLeft();
-			}
-			else
-			{
-				oppositeNode = currentNode.getParentNode().getRight();
-			}
+				if (currentNode.getParentNode().getLeft() != currentNode)
+				{
+					oppositeNode = currentNode.getParentNode().getLeft();
+				}
+				else
+				{
+					oppositeNode = currentNode.getParentNode().getRight();
+				}
 
-			if (currentNode.currentAxis == Axis.X)
-			{
-				distanceApart = currentNode.getParentNode().getVector().getX() - currentNode.getVector().getX();
-			}
-			else
-			{
-				distanceApart = currentNode.getParentNode().getVector().getY() - currentNode.getVector().getY();
-			}
+				if (oppositeNode.getVector() != null)
+				{
+					int distanceApart;
 
-			if (distanceApart < 0)
-			{
-				distanceApart *= -1;
-			}
+					if (currentNode.getParentNode().currentAxis == Axis.X)
+					{
+						distanceApart = currentNode.getParentNode().getVector().getX() - targetCoordinates.getX();
+					}
+					else
+					{
+						distanceApart = currentNode.getParentNode().getVector().getY() - targetCoordinates.getY();
+					}
 
-			if (distanceApart < bestDistance)
-			{
-				Node newLeaf = findClosestLeafRecursive(targetCoordinates, oppositeNode, oppositeNode.currentAxis);
-				bestDistance = recursiveCheckBranch(targetCoordinates, newLeaf, currentNode.getParentNode(),
-						bestDistance);
+					if (distanceApart < 0)
+					{
+						distanceApart *= -1;
+					}
+
+					if (distanceApart < bestDistance)
+					{
+						Node newLeaf = findClosestLeafRecursive(targetCoordinates, oppositeNode);
+						bestDistance = recursiveCheckBranch(targetCoordinates, newLeaf, currentNode.getParentNode(),
+								bestDistance);
+					}
+				}
 			}
 		}
 

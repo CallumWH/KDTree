@@ -33,6 +33,8 @@ public class KDTree
 	{
 		double  bestDistance = -1;
 		Vector2 mostIsolatedCoordinate = new Vector2(-1, -1);
+		
+		String testString = "";
 
 		for (int i = 0; i < vector2Array.length; i++)
 		{
@@ -40,6 +42,7 @@ public class KDTree
 			try
 			{
 				currentDistance = findClosestNeighbor(vector2Array[i]);
+				System.out.println(vector2Array[i].OutputString() + " - Distance : " + currentDistance);
 			}
 			catch (IOException e)
 			{
@@ -51,8 +54,15 @@ public class KDTree
 				bestDistance = currentDistance;
 				mostIsolatedCoordinate = vector2Array[i];
 			}
+			
+			if(vector2Array[i].getOriginalIndex() == 5771)
+			{
+				testString = new String("place55163 : " + currentDistance);
+			}
 		}
-
+		
+		System.out.println("Highest Distance = " + mostIsolatedCoordinate.OutputString() + " : " + bestDistance);
+		System.out.println(testString);
 		return mostIsolatedCoordinate;
 	}
 
